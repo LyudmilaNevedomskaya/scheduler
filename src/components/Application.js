@@ -88,7 +88,9 @@ const appointments = [
 
 export default function Application(props) {
 
+  const [day, setDay] = useState('Monday');
   const [days, setDays] = useState([]);
+
 
   useEffect(() => {
     axios
@@ -120,7 +122,8 @@ export default function Application(props) {
 <nav className="sidebar__menu">
   <DayList 
     days={days}
-    setDays={setDays}/>
+    day={day}
+    setDay={setDay}/>
 </nav>
 <img
   className="sidebar__lhl sidebar--centered"
