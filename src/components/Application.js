@@ -5,6 +5,7 @@ import "components/Application.scss";
 import DayList from "./DayList";
 import Appointment from "./Appointment";
 import {getAppointmentsForDay } from "../helpers/selectors"
+import { getInterview } from "../helpers/selectors";
 
 // const days = [
 //   {
@@ -96,7 +97,8 @@ export default function Application(props) {
     day: "Monday",
     days: [],
     // you may put the line below, but will have to remove/comment hardcoded appointments variable
-    appointments: {}
+    appointments: {},
+    interviewers: {}
   });
 
   
@@ -118,20 +120,25 @@ export default function Application(props) {
           axios.get(`/api/appointments`),
           axios.get(`/api/interviewers`)
         ]).then((all) => {
-          console.log(all[2].data)
+          //console.log(all[2].data)
           
           setState(prev => ({...prev, days:all[0].data, appointments: all[1].data, interviewers: all[2].data}))
         })
       }, [])
       
-  const dailyAppointments = getAppointmentsForDay(state, state.day);
-  console.log(dailyAppointments);
+  const appointments = getAppointmentsForDay(state, state.day);
+  console.log(state.interviewers);
 
-  const apps = dailyAppointments.map((appointment) => {
+  const schedule = appointments.map((appointment) => {
+    const interview = getInterview(state, appointment.interview);
+
     return (
             <Appointment
               key={appointment.id}
-              {...appointment}
+              // {...appointment}
+              id={appointment.id}
+              time={appointment.time}
+              interview={interview}
             />
     )
   })
@@ -160,7 +167,7 @@ export default function Application(props) {
       </section>
       <section className="schedule">
         {/* Replace this with the schedule elements durint the "The Scheduler" activity. */}
-        {apps}
+        {schedule}
       </section>
     </main>
   );

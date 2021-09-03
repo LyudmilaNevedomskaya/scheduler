@@ -13,5 +13,30 @@ export function getAppointmentsForDay(state, day) {
         }
       }
   }
+  //console.log(result);
+  return result;
+}
+
+export function getInterview(state, interview) {
+  //console.log(state);
+  //console.log(interview);
+  let result = {}
+
+  if (!interview) {
+    return null
+  }
+  
+  for (let int in state.interviewers) {
+    if (state.interviewers[int].id === interview.interviewer) {
+
+      result.student = interview.student
+      result.interviewer = state.interviewers[int]
+
+      //console.log(result);
+    }
+    //onsole.log('testttttttt', int);
+    //console.log('test3', state.interviewers[int].id);
+
+  }
   return result;
 }
