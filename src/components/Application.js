@@ -4,6 +4,7 @@ import axios from "axios";
 import "components/Application.scss";
 import DayList from "./DayList";
 import Appointment from "./Appointment";
+import {getAppointmentsForDay } from "../helpers/selectors"
 
 // const days = [
 //   {
@@ -23,68 +24,68 @@ import Appointment from "./Appointment";
 //   },
 // ];
 
-const appointments = [
-  {
-    id: 1,
-    time: "12pm",
-  },
-  {
-    id: 2,
-    time: "1pm",
-    interview: {
-      student: "Lydia Miller-Jones",
-      interviewer: {
-        id: 1,
-        name: "Sylvia Palmer",
-        avatar: "https://i.imgur.com/LpaY82x.png",
-      }
-    }
-  },
-  {
-    id: 3,
-    time: "2pm",
-    interview: {
-      student: "Mila Kukoba",
-      interviewer: {
-        id: 2,
-        name: "Tori Malcolm",
-        avatar: "https://i.imgur.com/Nmx0Qxo.png",
-      }
-    }
-  },
-  {
-    id: 4,
-    time: "3pm",
-    interview: {
-      student: "Shan Poul",
-      interviewer: {
-        id: 3,
-        name: "Mildred Nazirm",
-        avatar: "https://i.imgur.com/Nmx0Qxo.png",
-      }
-    }
-  },
-  {
-    id: 5,
-    time: "4pm",
-    interview: {
-      student: "Antony Gates",
-      interviewer: {
-        id: 4,
-        name: "Cohana Roy",
-        avatar: "https://i.imgur.com/FK8V841.jpg",
-      }
-    }
-  },
-  {
-    id: 6,
-    time: "5pm",
-  },
-  {
-    id: 7,
-    time: "6pm",
-  }
-];
+// const appointments = [
+//   {
+//     id: 1,
+//     time: "12pm",
+//   },
+//   {
+//     id: 2,
+//     time: "1pm",
+//     interview: {
+//       student: "Lydia Miller-Jones",
+//       interviewer: {
+//         id: 1,
+//         name: "Sylvia Palmer",
+//         avatar: "https://i.imgur.com/LpaY82x.png",
+//       }
+//     }
+//   },
+//   {
+//     id: 3,
+//     time: "2pm",
+//     interview: {
+//       student: "Mila Kukoba",
+//       interviewer: {
+//         id: 2,
+//         name: "Tori Malcolm",
+//         avatar: "https://i.imgur.com/Nmx0Qxo.png",
+//       }
+//     }
+//   },
+//   {
+//     id: 4,
+//     time: "3pm",
+//     interview: {
+//       student: "Shan Poul",
+//       interviewer: {
+//         id: 3,
+//         name: "Mildred Nazirm",
+//         avatar: "https://i.imgur.com/Nmx0Qxo.png",
+//       }
+//     }
+//   },
+//   {
+//     id: 5,
+//     time: "4pm",
+//     interview: {
+//       student: "Antony Gates",
+//       interviewer: {
+//         id: 4,
+//         name: "Cohana Roy",
+//         avatar: "https://i.imgur.com/FK8V841.jpg",
+//       }
+//     }
+//   },
+//   {
+//     id: 6,
+//     time: "5pm",
+//   },
+//   {
+//     id: 7,
+//     time: "6pm",
+//   }
+// ];
 
 export default function Application(props) {
   
@@ -95,22 +96,38 @@ export default function Application(props) {
     day: "Monday",
     days: [],
     // you may put the line below, but will have to remove/comment hardcoded appointments variable
-    //appointments: {}
+    appointments: {}
   });
+
   
   const setDay = day => setState({ ...state, day });
-  const setDays = days => setState(prev => ({ ...prev, days }));
+  //const setDays = days => setState(prev => ({ ...prev, days }));
+  
+  // useEffect(() => {
+    //   axios
+    //   .get(`/api/days`)
+    //   .then((response) => {
+      //     console.log(response.data);
+      //     //setDays([...response.data])
+      //   })
+      // }, [])
+      
+      useEffect(() => {
+        Promise.all([
+          axios.get(`/api/days`),
+          axios.get(`/api/appointments`),
+          axios.get(`/api/interviewers`)
+        ]).then((all) => {
+          console.log(all[2].data)
+          
+          setState(prev => ({...prev, days:all[0].data, appointments: all[1].data, interviewers: all[2].data}))
+        })
+      }, [])
+      
+  const dailyAppointments = getAppointmentsForDay(state, state.day);
+  console.log(dailyAppointments);
 
-  useEffect(() => {
-    axios
-    .get(`/api/days`)
-    .then((response) => {
-      console.log(response.data);
-      setDays([...response.data])
-    })
-  }, [])
-
-  const apps = appointments.map((appointment) => {
+  const apps = dailyAppointments.map((appointment) => {
     return (
             <Appointment
               key={appointment.id}
