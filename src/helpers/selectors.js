@@ -52,8 +52,10 @@ export function getInterviewersForDay(state, day) {
   let result = [];
   
   if (appointments.length > 0) {
+    const keys = Object.keys(allInterviewers);
+    console.log('keys', keys);
     for (let i=0; i<appointments[0].length; i++) {
-      if (allAppointments[appointments[0][i]].interview !== null) {
+      if ((allAppointments[appointments[0][i]].interview !== null)) {
         result.push(allInterviewers[allAppointments[appointments[0][i]].interview.interviewer])
       }
     }
