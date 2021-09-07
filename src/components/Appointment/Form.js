@@ -21,7 +21,7 @@ export default function Form (props) {
      props.onCancel();
   }
   const save = function () {
-    //console.log('FORM onSave');
+    console.log('FORM onSave');
     props.onSave(name, interviewer)
   }
 
