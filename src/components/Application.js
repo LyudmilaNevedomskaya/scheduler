@@ -1,12 +1,12 @@
-import React, {useState, useEffect} from "react";
-import axios from "axios";
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 
-import "components/Application.scss";
-import DayList from "./DayList";
-import Appointment from "./Appointment";
-import {getAppointmentsForDay } from "../helpers/selectors"
-import { getInterview } from "../helpers/selectors";
-import { getInterviewersForDay } from "../helpers/selectors";
+import 'components/Application.scss'
+import DayList from './DayList'
+import Appointment from './Appointment'
+import { getAppointmentsForDay } from '../helpers/selectors'
+import { getInterview } from '../helpers/selectors'
+import { getInterviewersForDay } from '../helpers/selectors'
 
 // const days = [
 //   {
@@ -90,89 +90,143 @@ import { getInterviewersForDay } from "../helpers/selectors";
 // ];
 
 export default function Application(props) {
-  
   // const [day, setDay] = useState('Monday');
   // const [days, setDays] = useState([]);
-  
+
   const [state, setState] = useState({
-    day: "Monday",
+    day: 'Monday',
     days: [],
     // you may put the line below, but will have to remove/comment hardcoded appointments variable
     appointments: {},
-    interviewers: {}
-  });
+    interviewers: {},
+  })
 
-  
-  const setDay = day => setState({ ...state, day });
+  const setDay = (day) =>
+    setState({
+      ...state,
+      day,
+    })
   //const setDays = days => setState(prev => ({ ...prev, days }));
-  
+
   // useEffect(() => {
-    //   axios
-    //   .get(`/api/days`)
-    //   .then((response) => {
-      //     console.log(response.data);
-      //     //setDays([...response.data])
-      //   })
-      // }, [])
-      
-      useEffect(() => {
-        Promise.all([
-          axios.get(`/api/days`),
-          axios.get(`/api/appointments`),
-          axios.get(`/api/interviewers`)
-        ]).then((all) => {
-          //console.log(all[2].data)
-          
-          setState(prev => ({...prev, days:all[0].data, appointments: all[1].data, interviewers: all[2].data}))
-        })
-      }, [])
-      
-  const appointments = getAppointmentsForDay(state, state.day);
+  //   axios
+  //   .get(`/api/days`)
+  //   .then((response) => {
+  //     console.log(response.data);
+  //     //setDays([...response.data])
+  //   })
+  // }, [])
+
+  useEffect(() => {
+    Promise.all([
+      axios.get(`/api/days`),
+      axios.get(`/api/appointments`),
+      axios.get(`/api/interviewers`),
+    ]).then((all) => {
+      //console.log(all[2].data)
+
+      setState((prev) => ({
+        ...prev,
+        days: all[0].data,
+        appointments: all[1].data,
+        interviewers: all[2].data,
+      }))
+    })
+  }, [])
+
+  function bookInterview(id, interview) {
+    const appointment = {
+      ...state.appointments[id],
+      interview: {
+        ...interview,
+      },
+    }
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment,
+    }
+
+    setState({...state,appointments})
+    //console.log(id, interview)
+    
+    
+    return axios.put(`/api/appointments/${id}`, {interview})
+    .then((res) => {
+      return res;
+    })
+  }
+
+  function cancelInterview(id, interview) {
+    const appointment = {
+      ...state.appointments[id],
+      interview: {
+        ...interview,
+      },
+    }
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment,
+    }
+
+    setState({...state,appointments})
+
+    return axios.delete(`/api/appointments/${id}`)
+    .then((res) => {
+      console.log(res);
+      return res;
+    })
+
+
+    
+  }
+
+  const appointments = getAppointmentsForDay(state, state.day)
   //console.log(state.interviewers);
-  const interviewers = getInterviewersForDay(state, state.day);
+  const interviewers = getInterviewersForDay(state, state.day)
+  console.log(state.day);
   console.log(interviewers);
 
   const schedule = appointments.map((appointment) => {
-    const interview = getInterview(state, appointment.interview);
+    const interview = getInterview(state, appointment.interview)
 
     return (
-            <Appointment
-              key={appointment.id}
-              // {...appointment}
-              id={appointment.id}
-              time={appointment.time}
-              interview={interview}
-              interviewers={interviewers}
-            />
+      <Appointment
+        key={appointment.id}
+        bookInterview={bookInterview}
+        cancelInterview={cancelInterview}
+        // {...appointment}
+        id={appointment.id}
+        time={appointment.time}
+        interview={interview}
+        interviewers={interviewers}
+      />
     )
   })
 
   return (
     <main className="layout">
       <section className="sidebar">
-      <img
-        className="sidebar--centered"
-        src="images/logo.png"
-        alt="Interview Scheduler"
-      />
-      <hr className="sidebar__separator sidebar--centered" />
-      <nav className="sidebar__menu">
-        <DayList 
-          days={state.days}
-          day={state.day}
-          setDay={setDay}/>
-      </nav>
-      <img
-        className="sidebar__lhl sidebar--centered"
-        src="images/lhl.png"
-        alt="Lighthouse Labs"
-      />
-        {/* Replace this with the sidebar elements during the "Project Setup & Familiarity" activity. */}
-      </section>
+        <img
+          className="sidebar--centered"
+          src="images/logo.png"
+          alt="Interview Scheduler"
+        />
+        <hr className="sidebar__separator sidebar--centered" />
+        <nav className="sidebar__menu">
+          <DayList days={state.days} day={state.day} setDay={setDay} />{' '}
+        </nav>{' '}
+        <img
+          className="sidebar__lhl sidebar--centered"
+          src="images/lhl.png"
+          alt="Lighthouse Labs"
+        />{' '}
+        {/* Replace this with the sidebar elements during the "Project Setup & Familiarity" activity. */}{' '}
+      </section>{' '}
       <section className="schedule">
-        {/* Replace this with the schedule elements durint the "The Scheduler" activity. */}
-        {schedule}
-      </section>
+        {' '}
+        {/* Replace this with the schedule elements durint the "The Scheduler" activity. */}{' '}
+        {schedule}{' '}
+      </section>{' '}
     </main>
-  );
+  )
 }
