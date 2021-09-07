@@ -21,7 +21,8 @@ const SAVING = 'SAVING'
 const DELETE = 'DELETE'
 const CONFIRM = 'CONFIRM'
 const EDIT = 'EDIT'
-const PROBLEM = 'PROBLEM'
+const ERROR_SAVE = "We're sorry, something went wrong";
+const ERROR_DELETE = "We're sorry, something went wrong on our end";
 
 export default function Appointment(props) {
   const { mode, transition, back } = useVisualMode(
@@ -35,14 +36,17 @@ export default function Appointment(props) {
       interviewer,
     }
 
-    transition(SAVING)
-
-    props.bookInterview(props.id, interview).then(() => transition(SHOW))
+    transition(SAVING, true);
+    props.bookInterview(props.id, interview)
+    .then(() => transition(SHOW))
+    .catch(error => transition(ERROR_SAVE, true))
   }
 
   function deleteAppointment() {
-    transition(DELETE)
-    return props.cancelInterview(props.id).then(() => transition(EMPTY))
+    transition(DELETE, true)
+    props.cancelInterview(props.id)
+    .then(() => transition(EMPTY))
+    .catch(error => transition(ERROR_DELETE, true))
 
     //console.log('deleteAppoint',name);
     //props.cancelInterview(props.id, interview)
@@ -78,7 +82,6 @@ export default function Appointment(props) {
       )}
       {mode === SAVING && <Status message={'Saving'} />}
       {mode === DELETE && <Status message={'Deleting'} />}
-      {mode === PROBLEM && <Error onClose={() => back} />}
       {mode === EDIT && (
         <Form
           id={props.id}
@@ -98,6 +101,8 @@ export default function Appointment(props) {
           onConfirm={deleteAppointment}
         />
       )}
+      {mode === ERROR_SAVE && (<Error message={ERROR_SAVE} onClose={back} />)}
+      {mode === ERROR_DELETE && (<Error message={ERROR_DELETE} onClose={back} />)}
     </article>
   )
 }
