@@ -79,15 +79,15 @@ export default function useApplicationData(props) {
     // if (state.day === 'Wednesday') dayNum = 2
     // if (state.day === 'Thursday') dayNum = 3
     // if (state.day === 'Friday') dayNum = 4
-    console.log('state', state)
+    //console.log('state', state)
     const appointment = {
       ...state.appointments[id],
       interview: {
         ...interview,
       },
     }
-    console.log('APPOINTMENT', appointment)
-    console.log('INTERVIEW', interview)
+    //console.log('APPOINTMENT', appointment)
+    //console.log('INTERVIEW', interview)
     const appointments = {
       ...state.appointments,
       [id]: appointment,
@@ -101,7 +101,7 @@ export default function useApplicationData(props) {
     //day.spots = spots
 
     const days = [...state.days]
-    console.log('days', days)
+    //console.log('days', days)
     //days[dayNum] = day
     const updatedDays = updateDays(days, appointment, -1)
     //console.log('update days', test );
@@ -137,6 +137,7 @@ export default function useApplicationData(props) {
         //console.log(res);
         //return res;
       })
+      
       .catch((error) => {
         console.log(error.response)
         return null
