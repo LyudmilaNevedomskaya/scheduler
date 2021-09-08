@@ -51,7 +51,7 @@ export default function Appointment(props) {
     //console.log('deleteAppoint',name);
     //props.cancelInterview(props.id, interview)
   }
-
+  console.log("props", props.interview);
   return (
     <article className="appointment">
       <Header time={props.time} />
@@ -69,7 +69,7 @@ export default function Appointment(props) {
           onDelete={() => transition(CONFIRM)}
           bookInterview={props.bookInterview}
           student={props.interview.student}
-          interviewer={props.interview.interviewer.name}
+          interviewer={props.interview.interviewer}
         />
       )}
       {mode === CREATE && (
