@@ -30,16 +30,14 @@ export default function Appointment(props) {
   )
 
   function save(name, interviewer) {
-    //console.log('save');
     const interview = {
       student: name,
       interviewer,
     }
-
     transition(SAVING);
     props.bookInterview(props.id, interview)
     .then(() => transition(SHOW))
-    //.catch(error => transition(ERROR_SAVE, true))
+    .catch(error => transition(ERROR_SAVE, true))
   }
 
   function deleteAppointment() {
@@ -47,11 +45,8 @@ export default function Appointment(props) {
     props.cancelInterview(props.id)
     .then(() => transition(EMPTY))
     .catch(error => transition(ERROR_DELETE, true))
-
-    //console.log('deleteAppoint',name);
-    //props.cancelInterview(props.id, interview)
   }
-  console.log("props", props.interview);
+  
   return (
     <article className="appointment">
       <Header time={props.time} />
