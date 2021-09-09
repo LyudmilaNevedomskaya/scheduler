@@ -5,7 +5,6 @@ export default function useApplicationData(props) {
   const [state, setState] = useState({
     day: 'Monday',
     days: [],
-    // you may put the line below, but will have to remove/comment hardcoded appointments variable
     appointments: {},
     interviewers: {},
   })
@@ -31,6 +30,7 @@ export default function useApplicationData(props) {
     })
   }, [])
 
+//UPDATING an available spots for interview//////////////////////////
   const updateSpots = (data) => {
     //console.log('DATA', data);
     let updatedDay = {}
@@ -54,7 +54,7 @@ export default function useApplicationData(props) {
 
     return newDays;
 }
-
+//ADDING NEW INTERVIEW///////////////////////////////////////
   function bookInterview(id, interview) {
 
     const appointment = {...state.appointments[id], interview: { ...interview } };
@@ -73,7 +73,7 @@ export default function useApplicationData(props) {
         return null
       })
   }
-
+// DELETING an existing interview//////////////////////////////////
   function cancelInterview(id) {
     const appointment = {...state.appointments[id], interview: null }
     const appointments = { ...state.appointments, [id]: appointment }

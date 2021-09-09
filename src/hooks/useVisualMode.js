@@ -12,7 +12,7 @@ const useVisualMode = function (initial) {
       setHistory(prev => {
         return [...prev, newMode]})
     } else {
-      setMode(newMode)
+      setMode(newMode);
     }
   }
   
@@ -20,7 +20,7 @@ const useVisualMode = function (initial) {
     if (history.length > 1) {
       history.pop()
       let last = history[history.length - 1];
-      setMode(last)
+      setMode(last);
     }
    
   }
