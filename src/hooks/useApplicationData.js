@@ -60,13 +60,14 @@ export default function useApplicationData(props) {
     const appointment = {...state.appointments[id], interview: { ...interview } };
     const appointments = {...state.appointments, [id]: appointment };
     const newState = {...state, appointments };
-    const days = updateSpots(newState);
-
+    
     return axios.put(`/api/appointments/${id}`, {interview})
-      .then(() => {
+    .then((res) => {
+        const days = updateSpots(newState);
           setState(prev => {
           return {...prev, appointments, days}
         })
+        return res;
       })
       .catch((error) => {
         console.log(error.response)
@@ -78,14 +79,15 @@ export default function useApplicationData(props) {
     const appointment = {...state.appointments[id], interview: null }
     const appointments = { ...state.appointments, [id]: appointment }
     const newState = {...state, appointments}
-    const days = updateSpots(newState);
-
+    
     return axios
-      .delete(`/api/appointments/${id}`)
-      .then(() => {
+    .delete(`/api/appointments/${id}`)
+    .then((res) => {
+        const days = updateSpots(newState);
         setState(prev => {
           return {...prev, appointments, days}
         })
+        return res;
       })
       .catch((error) => {
         console.log(error.response)
